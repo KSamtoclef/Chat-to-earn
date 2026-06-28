@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Chat-to-Earn</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Inter',sans-serif;background:#0A0F0D;color:#E8F5F0;min-height:100vh;overflow-x:hidden;touch-action:manipulation;}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;}
+:root{--g:#00C896;--bg:#0A0F0D;--s:#121A16;--s2:#1A2520;--br:#1F2E28;--tx:#E8F5F0;--mu:#7A9E90;--gold:#FFD166;--red:#FF6B6B;}
+.page{display:none;min-height:100vh;flex-direction:column;width:100%;}
+.page.on{display:flex;}
+#day-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;}
+#day-modal.show{display:flex;}
+.mbox{background:var(--s);border:1px solid var(--br);border-radius:20px;padding:24px;width:100%;max-width:340px;text-align:center;}
+.mbox h3{font-size:19px;margin-bottom:8px;}
+.mbox p{font-size:13px;color:var(--mu);margin-bottom:14px;line-height:1.6;}
+.mearns{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--g);margin:8px 0 14px;}
+.mad{background:var(--s2);border:1px dashed var(--br);border-radius:12px;padding:12px;margin-bottom:14px;cursor:pointer;}
+.mad .al{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--mu);margin-bottom:3px;}
+.mad .ab{font-size:13px;color:var(--tx);}
+.mad .ae{font-size:11px;color:var(--g);margin-top:3px;}
+.mbtn{display:block;width:100%;background:var(--g);color:#000;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;padding:13px;border:none;border-radius:12px;cursor:pointer;}
+.mbtn:active{opacity:.8;}
+.gbtn{display:block;width:100%;max-width:360px;margin:0 auto;background:var(--g);color:#000;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;padding:15px;border:none;border-radius:14px;cursor:pointer;text-align:center;}
+.gbtn:active{opacity:.8;}
+.obtn{display:block;width:100%;max-width:360px;margin:10px auto 0;background:transparent;color:var(--mu);font-size:14px;padding:12px;border:1px solid var(--br);border-radius:14px;cursor:pointer;text-align:center;}
+.obtn:active{border-color:var(--g);color:var(--g);}
+#pg-landing{background:radial-gradient(ellipse at 60% 0%,rgba(0,200,150,.13) 0%,transparent 60%),#0A0F0D;align-items:center;padding:24px 20px 40px;text-align:center;}
+.flags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.flag{background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--mu);}
+.live{display:inline-flex;align-items:center;gap:6px;background:rgba(0,200,150,.1);border:1px solid var(--g);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--g);margin-bottom:18px;font-family:'Space Grotesk',sans-serif;font-weight:600;}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--g);animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(26px,7vw,44px);font-weight:700;line-height:1.15;margin-bottom:12px;}
+.hero h1 span{color:var(--g);}
+.hero p{font-size:14px;color:var(--mu);max-width:310px;margin:0 auto 20px;line-height:1.6;}
+.stats{display:flex;gap:10px;justify-content:center;margin-bottom:22px;flex-wrap:wrap;}
+.stat{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:12px 16px;min-width:88px;}
+.stat .v{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--g);}
+.stat .l{font-size:11px;color:var(--mu);margin-top:2px;}
+.how-sec{margin-top:26px;width:100%;max-width:380px;}
+.sech{font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;}
+.hi{display:flex;align-items:flex-start;gap:12px;background:var(--s);border:1px solid var(--br);border-radius:14px;padding:13px;margin-bottom:8px;text-align:left;}
+.hi .ico{font-size:20px;flex-shrink:0;margin-top:1px;}
+.hi .ht{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.hi .hd{font-size:12px;color:var(--mu);margin-top:2px;line-height:1.5;}
+.adbox{background:var(--s2);border:1px dashed var(--br);border-radius:12px;padding:13px;cursor:pointer;text-align:center;width:100%;max-width:380px;margin-top:14px;}
+.adbox .al{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--mu);margin-bottom:3px;}
+.adbox .ab{font-size:13px;color:var(--tx);padding:3px 0;}
+.adbox .ae{font-size:11px;color:var(--g);margin-top:3px;}
+.testis{margin-top:22px;width:100%;max-width:380px;}
+.tc{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:14px;margin-bottom:8px;text-align:left;}
+.ttop{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.tav{width:34px;height:34px;border-radius:50%;background:rgba(0,200,150,.18);border:1px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.tnm{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;}
+.tlc{font-size:11px;color:var(--mu);}
+.tst{color:var(--gold);font-size:12px;margin-left:auto;}
+.ttxt{font-size:13px;color:var(--mu);line-height:1.6;}
+.tamt{display:inline-block;margin-top:7px;background:rgba(0,200,150,.1);border:1px solid var(--g);border-radius:8px;padding:3px 10px;font-size:12px;color:var(--g);font-weight:600;font-family:'Space Grotesk',sans-serif;}
+.paylist{margin-top:16px;background:var(--s);border:1px solid var(--br);border-radius:14px;padding:14px;width:100%;max-width:380px;text-align:left;}
+.paylist h4{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;}
+.prow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--br);}
+.prow:last-child{border-bottom:none;}
+.pav{width:30px;height:30px;border-radius:50%;background:rgba(0,200,150,.18);border:1px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.pnm{font-size:13px;font-weight:500;}
+.pam{font-size:12px;color:var(--g);}
+.ptm{margin-left:auto;font-size:11px;color:var(--mu);}
+#pg-register,#pg-login{background:#0A0F0D;justify-content:flex-start;align-items:stretch;overflow-y:auto;}
+.fwrap{width:100%;max-width:400px;margin:0 auto;padding:20px;}
+.bbtn{background:none;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:4px 0;margin-bottom:16px;display:inline-block;}
+.fcard{background:var(--s);border:1px solid var(--br);border-radius:20px;padding:22px;}
+.fcard h2{font-size:21px;margin-bottom:5px;}
+.fsub{font-size:13px;color:var(--mu);margin-bottom:16px;line-height:1.5;}
+.bbar{background:rgba(0,200,150,.1);border:1px solid var(--g);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--g);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;color:var(--mu);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.field input{display:block;width:100%;background:var(--s2);border:2px solid var(--br);border-radius:10px;padding:13px 14px;color:#E8F5F0;font-size:16px;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none;appearance:none;}
+.field input:focus{border-color:var(--g);}
+.field input::placeholder{color:#7A9E90;}
+.errbar{background:rgba(255,107,107,.12);border:1px solid var(--red);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:12px;display:none;}
+.ffoot{text-align:center;margin-top:14px;font-size:13px;color:var(--mu);}
+.ffoot span{color:var(--g);cursor:pointer;font-weight:500;}
+.fsub-btn{display:block;width:100%;background:var(--g);color:#000;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;padding:15px;border:none;border-radius:14px;cursor:pointer;margin-top:4px;}
+.fsub-btn:active{opacity:.8;}
+#pg-welcome{background:radial-gradient(ellipse at 50% 30%,rgba(0,200,150,.15) 0%,transparent 60%),#0A0F0D;align-items:center;justify-content:center;padding:32px 20px;text-align:center;overflow-y:auto;}
+.wico{font-size:60px;margin-bottom:12px;animation:pop .5s ease;}
+@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.wbonus{font-size:44px;font-weight:700;color:var(--g);font-family:'Space Grotesk',sans-serif;margin:8px 0 3px;}
+.wlbl{font-size:14px;color:var(--mu);margin-bottom:18px;}
+.dayroad{display:flex;gap:10px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+.dchip{background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:11px 14px;min-width:88px;}
+.dchip.on{border-color:var(--g);background:rgba(0,200,150,.08);}
+.dc{font-family:'Space Grotesk',sans-serif;font-size:11px;color:var(--mu);text-transform:uppercase;}
+.dv{font-weight:700;color:var(--g);font-family:'Space Grotesk',sans-serif;font-size:15px;margin-top:3px;}
+.rules{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:14px;max-width:340px;margin:0 auto 18px;text-align:left;}
+.rules h4{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--gold);}
+.ri{font-size:12px;color:var(--mu);padding:5px 0;border-bottom:1px solid var(--br);line-height:1.5;}
+.ri:last-child{border-bottom:none;}
+.ri strong{color:var(--tx);}
+#pg-dash{background:#0A0F0D;}
+.topbar{background:var(--s);border-bottom:1px solid var(--br);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--g);}
+.topbal{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;text-align:right;}
+.topbal span{font-size:10px;color:var(--mu);font-weight:400;display:block;}
+.dbody{padding:14px;flex:1;overflow-y:auto;}
+.missed{background:rgba(255,107,107,.1);border:1px solid var(--red);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--red);margin-bottom:11px;display:none;line-height:1.5;}
+.dprog{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:13px;margin-bottom:11px;}
+.dph{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.dpt{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.dpb{background:rgba(0,200,150,.1);color:var(--g);border:1px solid var(--g);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;}
+.pbar{background:var(--s2);border-radius:8px;height:8px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--g),#00FFB3);border-radius:8px;transition:width .5s;}
+.dps{font-size:12px;color:var(--mu);margin-top:7px;}
+.balcard{background:linear-gradient(135deg,#0D2B20,#0A1F17);border:1px solid var(--g);border-radius:14px;padding:16px;margin-bottom:11px;position:relative;overflow:hidden;}
+.balcard::before{content:'';position:absolute;top:-28px;right:-28px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,200,150,.2),transparent 70%);border-radius:50%;}
+.bclbl{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.bcamt{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--g);}
+.bcsub{font-size:12px;color:var(--mu);margin-top:3px;}
+.bcrow{display:flex;gap:14px;margin-top:11px;}
+.bcs .bv{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.bcs .bl{font-size:11px;color:var(--mu);}
+.sect{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:9px;}
+.kycbanner{background:linear-gradient(135deg,rgba(255,209,102,.08),rgba(255,209,102,.03));border:1px solid var(--gold);border-radius:14px;padding:14px;margin-bottom:11px;cursor:pointer;}
+.kycbanner:active{opacity:.8;}
+.kyctop{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.kycico{font-size:22px;}
+.kyctitle{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--gold);}
+.kycsub{font-size:12px;color:var(--mu);line-height:1.5;}
+.kycbtn{display:inline-block;margin-top:10px;background:var(--gold);color:#000;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;}
+.adunit{background:var(--s2);border:1px dashed var(--br);border-radius:12px;padding:13px;margin-bottom:11px;cursor:pointer;text-align:center;}
+.adunit:active{opacity:.8;}
+.adunit .al{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--mu);margin-bottom:3px;}
+.adunit .ab{font-size:13px;color:var(--tx);padding:3px 0;}
+.adunit .ae{font-size:11px;color:var(--g);margin-top:3px;}
+.pcard{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:13px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.pcard:active{border-color:var(--g);}
+.pav2{width:44px;height:44px;border-radius:50%;background:var(--s2);border:2px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.pinf{flex:1;}
+.pnm2{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.pfl{font-size:12px;color:var(--mu);}
+.ptop{font-size:11px;color:var(--mu);margin-top:1px;}
+.pdot{width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0;}
+.pe{font-size:13px;color:var(--g);font-weight:600;font-family:'Space Grotesk',sans-serif;}
+.tsk{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:13px;margin-bottom:8px;cursor:pointer;}
+.tsk:active{border-color:var(--g);}
+.tsk.done{opacity:.5;pointer-events:none;}
+.ttop2{display:flex;align-items:center;gap:12px;}
+.tico{width:40px;height:40px;border-radius:11px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.tinf{flex:1;}
+.tnm2{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.tds{font-size:12px;color:var(--mu);margin-top:2px;}
+.te{font-size:13px;color:var(--g);font-weight:600;font-family:'Space Grotesk',sans-serif;flex-shrink:0;}
+.tlink{margin-top:10px;background:rgba(0,200,150,.06);border:1px solid var(--br);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--mu);display:flex;align-items:center;gap:8px;}
+.botnav{background:var(--s);border-top:1px solid var(--br);display:flex;position:sticky;bottom:0;z-index:50;}
+.nbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px;cursor:pointer;color:var(--mu);font-size:10px;gap:3px;border:none;background:none;}
+.nbtn .ni{font-size:19px;}
+.nbtn.on{color:var(--g);}
+#pg-chat{background:#0A0F0D;}
+.chd{background:var(--s);border-bottom:1px solid var(--br);padding:11px 14px;display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:50;}
+.cbk{background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;}
+.cav{width:40px;height:40px;border-radius:50%;background:rgba(0,200,150,.18);border:2px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.cpn{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;}
+.cps{font-size:11px;color:var(--g);}
+.cearn{margin-left:auto;background:rgba(0,200,150,.1);border:1px solid var(--g);border-radius:9px;padding:4px 10px;font-size:12px;color:var(--g);font-weight:600;font-family:'Space Grotesk',sans-serif;white-space:nowrap;}
+.cmsgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:82%;}
+.msg.them{align-self:flex-start;}
+.msg.me{align-self:flex-end;}
+.mbub{padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.55;}
+.msg.them .mbub{background:var(--s2);border-bottom-left-radius:4px;}
+.msg.me .mbub{background:var(--g);color:#000;font-weight:500;border-bottom-right-radius:4px;}
+.mmeta{font-size:10px;color:var(--mu);margin-top:3px;}
+.msg.me .mmeta{text-align:right;}
+.typewrap{display:flex;gap:4px;align-items:center;padding:11px 13px;background:var(--s2);border-radius:16px;border-bottom-left-radius:4px;width:fit-content;}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--mu);animation:bnc 1.2s infinite;}
+.tdot:nth-child(2){animation-delay:.25s;}.tdot:nth-child(3){animation-delay:.5s;}
+@keyframes bnc{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+.cinrow{padding:11px 14px;background:var(--s);border-top:1px solid var(--br);display:flex;gap:9px;align-items:flex-end;position:sticky;bottom:0;}
+.cinp{flex:1;background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:10px 13px;color:var(--tx);font-size:16px;font-family:'Inter',sans-serif;resize:none;outline:none;max-height:100px;}
+.cinp:focus{border-color:var(--g);}
+.sbtn{width:40px;height:40px;background:var(--g);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+#pg-share{background:#0A0F0D;align-items:center;justify-content:center;padding:28px 20px;text-align:center;}
+.swico{font-size:52px;margin-bottom:12px;}
+.swtit{font-size:20px;font-weight:700;margin-bottom:7px;}
+.swsub{font-size:13px;color:var(--mu);margin-bottom:18px;max-width:300px;line-height:1.6;}
+.swdots{display:flex;justify-content:center;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.sdot{width:36px;height:36px;border-radius:50%;border:2px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mu);font-family:'Space Grotesk',sans-serif;font-weight:700;transition:all .3s;}
+.sdot.filled{background:var(--g);border-color:var(--g);color:#000;}
+.swprev{background:var(--s);border:1px solid var(--br);border-radius:14px;padding:13px 16px;margin-bottom:16px;width:100%;max-width:340px;}
+.spr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--br);font-size:13px;}
+.spr:last-child{border-bottom:none;}
+.spl{color:var(--mu);}
+.spv{color:var(--g);font-weight:600;font-family:'Space Grotesk',sans-serif;}
+.wabtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:340px;padding:14px;border:none;border-radius:14px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;margin-bottom:10px;}
+.wabtn.go{background:#25D366;color:#fff;}
+.wabtn.wait{background:var(--s2);color:var(--mu);pointer-events:none;border:1px solid var(--br);}
+.swnote{font-size:12px;color:var(--mu);max-width:300px;line-height:1.5;}
+.swprog{font-size:13px;color:var(--g);font-weight:600;margin-top:10px;font-family:'Space Grotesk',sans-serif;}
+.svmsg{font-size:12px;margin-top:8px;min-height:18px;font-weight:600;}
+.svok{color:var(--g);}
+#pg-claim{background:radial-gradient(ellipse at 50% 20%,rgba(0,200,150,.18) 0%,transparent 60%),#0A0F0D;align-items:center;justify-content:center;padding:36px 20px;text-align:center;}
+.clmico{font-size:68px;margin-bottom:14px;animation:pop .5s ease;}
+.clmamt{font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:var(--g);margin:10px 0 4px;}
+.clmlbl{font-size:14px;color:var(--mu);margin-bottom:20px;}
+.clmbox{background:var(--s);border:1px solid var(--g);border-radius:16px;padding:18px;width:100%;max-width:320px;margin-bottom:22px;}
+.clmrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--br);font-size:13px;}
+.clmrow:last-child{border-bottom:none;}
+.clml{color:var(--mu);}
+.clmr{color:var(--g);font-weight:600;font-family:'Space Grotesk',sans-serif;}
+#pg-wd{background:#0A0F0D;justify-content:flex-start;overflow-y:auto;}
+.wdwrap{width:100%;max-width:400px;margin:0 auto;padding:20px;}
+.wdcard{background:var(--s);border:1px solid var(--br);border-radius:20px;padding:22px;}
+.wdbal{background:var(--s2);border-radius:12px;padding:13px;text-align:center;margin-bottom:14px;}
+.wdbv{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--g);}
+.wdbl{font-size:12px;color:var(--mu);}
+.wdlock{background:rgba(255,107,107,.08);border:1px solid var(--red);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--red);margin-bottom:13px;text-align:center;line-height:1.5;}
+.kycreq{background:rgba(255,209,102,.07);border:1px solid var(--gold);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--gold);margin-bottom:13px;cursor:pointer;text-align:center;}
+.wdf{margin-bottom:12px;}
+.wdf label{display:block;font-size:11px;color:var(--mu);margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.wdf input,.wdf select{display:block;width:100%;background:var(--s2);border:1px solid var(--br);border-radius:10px;padding:12px 14px;color:var(--tx);font-size:16px;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none;appearance:none;}
+.wdf input:focus,.wdf select:focus{border-color:var(--g);}
+.wdf input::placeholder{color:var(--mu);}
+.wdf select option{background:var(--s2);}
+#pg-lb,#pg-profile,#pg-terms{background:#0A0F0D;overflow-y:auto;}
+.itopbar{background:var(--s);border-bottom:1px solid var(--br);padding:13px 18px;display:flex;align-items:center;position:sticky;top:0;z-index:50;}
+.ibk{background:none;border:none;color:var(--tx);font-size:19px;cursor:pointer;padding:4px;flex-shrink:0;}
+.ilogo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--g);flex:1;text-align:center;}
+.lbi{display:flex;align-items:center;gap:12px;background:var(--s);border:1px solid var(--br);border-radius:14px;padding:12px 14px;margin-bottom:8px;}
+.lbrank{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:var(--mu);width:26px;flex-shrink:0;}
+.lbrank.gld{color:var(--gold);}
+.lbav{width:36px;height:36px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.lbnm{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;}
+.lbst{font-size:11px;color:var(--mu);}
+.lbe{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--g);}
+.phd{background:var(--s);border-bottom:1px solid var(--br);padding:20px;text-align:center;}
+.pav3{width:64px;height:64px;border-radius:50%;background:rgba(0,200,150,.18);border:3px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;}
+.pbody{padding:16px;}
+.psr{display:flex;gap:10px;margin-bottom:13px;}
+.pst{flex:1;background:var(--s);border:1px solid var(--br);border-radius:13px;padding:13px;text-align:center;}
+.psv{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--g);}
+.psl{font-size:11px;color:var(--mu);margin-top:2px;}
+.mrow{display:flex;align-items:center;gap:12px;background:var(--s);border:1px solid var(--br);border-radius:14px;padding:13px 14px;margin-bottom:8px;cursor:pointer;}
+.mrow:active{border-color:var(--g);}
+.mico{font-size:19px;}
+.mlbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;flex:1;}
+.marr{color:var(--mu);}
+.tbody{padding:20px;max-width:500px;margin:0 auto;}
+.tbody h3{font-size:15px;margin:16px 0 7px;color:var(--g);}
+.tbody p{font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:8px;}
+.tl2{color:var(--g);font-weight:600;cursor:pointer;}
+#pg-proc,#pg-success{background:#0A0F0D;align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
+.spinner{width:56px;height:56px;border:3px solid var(--s2);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.psteps{text-align:left;max-width:280px;margin:18px auto 0;}
+.pstep{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--br);font-size:13px;color:var(--mu);}
+.pstep.done{color:var(--g);}
+.pstep.done::before{content:'✓';color:var(--g);font-weight:700;}
+.pstep:not(.done)::before{content:'○';color:var(--br);}
+#pg-success{background:radial-gradient(ellipse at 50% 30%,rgba(0,200,150,.15) 0%,transparent 60%),#0A0F0D;}
+#ET{position:fixed;top:66px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--g);color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:9px 20px;border-radius:30px;opacity:0;transition:all .3s;z-index:99999;pointer-events:none;white-space:nowrap;}
+#ET.on{opacity:1;transform:translateX(-50%) translateY(0);}
+#TT{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:10px 18px;font-size:13px;opacity:0;transition:opacity .3s;z-index:99998;pointer-events:none;max-width:90vw;text-align:center;}
+#TT.on{opacity:1;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--br);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<div id="ET"></div>
+<div id="TT"></div>
+
+<!-- DAY MODAL -->
+<div id="day-modal">
+  <div class="mbox">
+    <div style="font-size:46px;margin-bottom:10px;" id="dm-ico">🎉</div>
+    <h3 id="dm-title">Welcome to Day 1!</h3>
+    <p id="dm-body">Your bonus is ready. Complete your chats and tasks today.</p>
+    <div class="mearns" id="dm-target">Target: ₦15,000</div>
+    <div class="mad" id="modal-ad">
+      <div class="al">Sponsored</div>
+      <div class="ab">🎯 Exclusive opportunity for Chat-to-Earn members</div>
+      <div class="ae">+₦300 bonus credited instantly</div>
+    </div>
+    <button class="mbtn" id="modal-close-btn">Start Earning Now!</button>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div class="page on" id="pg-landing">
+  <div class="flags">
+    <span class="flag">🇺🇸 Americans</span><span class="flag">🇬🇧 British</span>
+    <span class="flag">🇨🇦 Canadians</span><span class="flag">🇩🇪 Germans</span>
+    <span class="flag">🇦🇺 Australians</span><span class="flag">🇫🇷 French</span>
+  </div>
+  <div class="live"><span class="ldot"></span> 4,291 Nigerians earning right now</div>
+  <div class="hero">
+    <h1>Chat with <span>Foreigners</span><br/>Get Paid Real Cash</h1>
+    <p>Real verified conversations with people abroad. Earn ₦2,000 per reply. Withdraw to your bank on Day 3.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">₦2,000</div><div class="l">Per reply</div></div>
+    <div class="stat"><div class="v">3 Days</div><div class="l">To withdraw</div></div>
+    <div class="stat"><div class="v">₦50,000</div><div class="l">Min. payout</div></div>
+  </div>
+  <button class="gbtn" id="land-signup-btn">🚀 Start Earning Free</button>
+  <button class="obtn" id="land-login-btn">Already have an account? Login</button>
+  <div class="adbox" id="land-ad1">
+    <div class="al">Sponsored</div>
+    <div class="ab">🎯 Top earning opportunity for Nigerians — tap to explore</div>
+    <div class="ae">+₦300 bonus for viewing</div>
+  </div>
+  <div class="how-sec">
+    <h3 class="sech">How it works</h3>
+    <div class="hi"><div class="ico">👤</div><div><div class="ht">Create free account</div><div class="hd">Sign up in seconds. Get ₦2,000 startup bonus immediately.</div></div></div>
+    <div class="hi"><div class="ico">💬</div><div><div class="ht">Chat with foreigners daily</div><div class="hd">Real people from UK, US, Canada, Germany. Earn ₦2,000 per reply.</div></div></div>
+    <div class="hi"><div class="ico">📲</div><div><div class="ht">Share to unlock earnings</div><div class="hd">Share to WhatsApp after each session to confirm your bonus.</div></div></div>
+    <div class="hi"><div class="ico">✅</div><div><div class="ht">Complete KYC verification</div><div class="hd">Required before withdrawal. Takes 2 minutes.</div></div></div>
+    <div class="hi"><div class="ico">⚠️</div><div><div class="ht">Log in every single day</div><div class="hd">Miss one day and your balance resets to zero. No exceptions.</div></div></div>
+    <div class="hi"><div class="ico">💸</div><div><div class="ht">Withdraw on Day 3</div><div class="hd">Hit ₦50,000 and cash out to Opay, Palmpay or any Nigerian bank.</div></div></div>
+  </div>
+  <div class="adbox" id="land-ad2" style="margin-top:8px;">
+    <div class="al">Sponsored</div>
+    <div class="ab">💰 Smart Nigerians earning extra from their phones — find out how</div>
+    <div class="ae">+₦300 bonus for viewing</div>
+  </div>
+  <div class="testis"><h3 class="sech">What members are saying</h3><div id="testi-list"></div></div>
+  <div class="paylist"><h4>💸 Live Payouts</h4><div id="pay-list"></div></div>
+</div>
+
+<!-- REGISTER -->
+<div class="page" id="pg-register">
+  <div class="fwrap">
+    <button class="bbtn" id="reg-back-btn">← Back</button>
+    <div class="fcard">
+      <h2>Sign Up</h2>
+      <p class="fsub">Create your free account and get ₦2,000 instantly</p>
+      <div class="bbar">🎁 ₦2,000 signup bonus on approval</div>
+      <div class="errbar" id="reg-err"></div>
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="e.g. Chioma Adeyemi" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="reg-email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="Minimum 6 characters">
+      </div>
+      <button class="fsub-btn" id="reg-submit">Create Account — Get ₦2,000</button>
+      <div class="ffoot">Already have an account? <span id="go-login">Login here</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="page" id="pg-login">
+  <div class="fwrap">
+    <button class="bbtn" id="login-back-btn">← Back</button>
+    <div class="fcard">
+      <h2>Welcome Back</h2>
+      <p class="fsub">Login daily to protect your earnings. Missing one day resets your balance.</p>
+      <div class="errbar" id="login-err"></div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button class="fsub-btn" id="login-submit">Login to Dashboard</button>
+      <div class="ffoot">New here? <span id="go-register">Create free account</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<div class="page" id="pg-welcome">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;overflow-y:auto;">
+    <div class="wico">🎉</div>
+    <h2 style="font-size:21px;margin-bottom:5px;">Welcome, <span id="wname" style="color:var(--g)">Friend</span>!</h2>
+    <p style="font-size:13px;color:var(--mu);margin-bottom:12px;">Your ₦2,000 signup bonus has been credited</p>
+    <div class="wbonus">₦2,000</div>
+    <div class="wlbl">Startup Bonus</div>
+    <div class="dayroad">
+      <div class="dchip on"><div class="dc">Day 1</div><div class="dv">₦15,000</div></div>
+      <div class="dchip"><div class="dc">Day 2</div><div class="dv">₦17,000</div></div>
+      <div class="dchip"><div class="dc">Day 3</div><div class="dv">Withdraw!</div></div>
+    </div>
+    <div class="rules">
+      <h4>⚠️ Important Rules</h4>
+      <div class="ri"><strong>Log in every day.</strong> Missing one day resets your full balance to zero.</div>
+      <div class="ri"><strong>Complete at least 2 chats per day</strong> to keep your streak active.</div>
+      <div class="ri"><strong>Share after every chat</strong> to unlock your session bonus.</div>
+      <div class="ri"><strong>Complete KYC</strong> before your withdrawal can be processed.</div>
+      <div class="ri"><strong>One account per person.</strong> Duplicates are banned permanently.</div>
+    </div>
+    <button class="gbtn" id="start-btn" style="max-width:340px;">Start Chatting Now</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page" id="pg-dash">
+  <div class="topbar">
+    <div class="logo">Chat-to-Earn</div>
+    <div class="topbal" id="top-bal">₦2,000 <span>Your balance</span></div>
+  </div>
+  <div class="dbody">
+    <div class="missed" id="missed-bar">⚠️ You missed yesterday! Your balance has been reset.</div>
+    <div class="dprog">
+      <div class="dph"><div class="dpt" id="dp-title">Day 1 of 3</div><div class="dpb" id="dp-badge">DAY 1</div></div>
+      <div class="pbar"><div class="pfill" id="pfill" style="width:4%"></div></div>
+      <div class="dps" id="dp-sub">Complete chats and tasks to hit your ₦15,000 Day 1 target</div>
+    </div>
+    <div class="balcard">
+      <div class="bclbl">Total Balance</div>
+      <div class="bcamt" id="bal-amt">₦2,000</div>
+      <div class="bcsub" id="bal-sub">Day 1 target: ₦15,000 · Withdraw on Day 3</div>
+      <div class="bcrow">
+        <div class="bcs"><div class="bv" id="st-chats">0</div><div class="bl">Chats</div></div>
+        <div class="bcs"><div class="bv" id="st-shares">0</div><div class="bl">Shares</div></div>
+        <div class="bcs"><div class="bv" id="st-day">1</div><div class="bl">Day</div></div>
+      </div>
+    </div>
+    <div class="kycbanner" id="kyc-banner">
+      <div class="kyctop"><div class="kycico">🪪</div><div class="kyctitle">Complete Your KYC — Required for Withdrawal</div></div>
+      <div class="kycsub">Identity verification is pending. You cannot withdraw until KYC is approved. Takes only 2 minutes.</div>
+      <button class="kycbtn">Complete KYC Now →</button>
+    </div>
+    <div class="adunit" id="dash-ad1">
+      <div class="al">Sponsored</div>
+      <div class="ab">📱 Exclusive deals for Chat-to-Earn members — tap to explore</div>
+      <div class="ae">+₦300 bonus for viewing</div>
+    </div>
+    <div class="sect">💬 Chat Partners Online Now</div>
+    <div id="partners-list"></div>
+    <div class="sect" style="margin-top:4px;">⚡ Today's Tasks</div>
+    <div class="tsk" id="tsk-checkin">
+      <div class="ttop2"><div class="tico">📅</div><div class="tinf"><div class="tnm2">Daily Check-in</div><div class="tds">Tap to check in and protect your earnings streak</div></div><div class="te">+₦1,000</div></div>
+    </div>
+    <div class="tsk" id="tsk-video">
+      <div class="ttop2"><div class="tico">📺</div><div class="tinf"><div class="tnm2">Watch Today's Video</div><div class="tds">Watch a short sponsored video from our partners</div></div><div class="te">+₦1,500</div></div>
+      <div class="tlink" id="video-link"><span>▶</span><span>Tap here to watch video and earn</span></div>
+    </div>
+    <div class="tsk" id="tsk-offer">
+      <div class="ttop2"><div class="tico">🎁</div><div class="tinf"><div class="tnm2">Complete Today's Offer</div><div class="tds">Complete a special offer from our sponsors</div></div><div class="te">+₦2,000</div></div>
+      <div class="tlink" id="offer-link"><span>🎯</span><span>Tap here to view today's offer and claim reward</span></div>
+    </div>
+    <div id="unlock-banner" style="display:none;background:linear-gradient(135deg,rgba(0,200,150,.1),rgba(0,200,150,.05));border:1px solid var(--g);border-radius:14px;padding:14px;margin-bottom:11px;cursor:pointer;" onclick="pg('pg-wd')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span style="font-size:22px;">🔓</span>
+        <span style="font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:700;color:var(--g);">Unlock Unlimited Earnings!</span>
+      </div>
+      <div style="font-size:12px;color:var(--mu);line-height:1.5;">You have reached today's earning limit. Complete your first withdrawal to unlock unlimited daily earnings — chat as much as you want!</div>
+      <button style="display:inline-block;margin-top:10px;background:var(--g);color:#000;font-family:Space Grotesk,sans-serif;font-size:13px;font-weight:700;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;">Withdraw Now to Unlock →</button>
+    </div>
+    <div class="adunit" id="dash-ad2" style="margin-top:4px;">
+      <div class="al">Sponsored</div>
+      <div class="ab">🔥 Hot earning opportunities — only for verified Chat-to-Earn members</div>
+      <div class="ae">+₦300 bonus for viewing</div>
+    </div>
+  </div>
+  <div class="botnav">
+    <button class="nbtn on" id="nb-home"><div class="ni">🏠</div>Home</button>
+    <button class="nbtn" id="nb-chat"><div class="ni">💬</div>Chat</button>
+    <button class="nbtn" id="nb-lb"><div class="ni">🏆</div>Top</button>
+    <button class="nbtn" id="nb-wd"><div class="ni">💸</div>Withdraw</button>
+    <button class="nbtn" id="nb-prof"><div class="ni">👤</div>Profile</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="page" id="pg-chat">
+  <div class="chd">
+    <button class="cbk" id="chat-back-btn">←</button>
+    <div class="cav" id="c-av">👩</div>
+    <div><div class="cpn" id="c-name">Partner</div><div class="cps" id="c-stat">Online now</div></div>
+    <div class="cearn" id="c-earn">₦0 earned</div>
+  </div>
+  <div class="cmsgs" id="chat-msgs"></div>
+  <div class="cinrow">
+    <textarea class="cinp" id="chat-inp" placeholder="Type your message..." rows="1"></textarea>
+    <button class="sbtn" id="send-btn">➤</button>
+  </div>
+</div>
+
+<!-- SHARE WALL -->
+<div class="page" id="pg-share">
+  <div class="swico">📲</div>
+  <h2 class="swtit">Unlock Your Session Bonus!</h2>
+  <p class="swsub">Share Chat-to-Earn on WhatsApp. Every share is verified. Each confirmed share earns you ₦500 extra.</p>
+  <div class="swdots" id="sw-dots"></div>
+  <div class="swprev">
+    <div class="spr"><span class="spl">Chat session earned</span><span class="spv" id="sw-sess">₦6,000</span></div>
+    <div class="spr"><span class="spl">Bonus per confirmed share</span><span class="spv">+₦500</span></div>
+    <div class="spr"><span class="spl">Shares confirmed</span><span class="spv" id="sw-done-txt">0 / 5</span></div>
+    <div class="spr"><span class="spl">Total to unlock</span><span class="spv" id="sw-total">₦6,000</span></div>
+  </div>
+  <button class="wabtn go" id="wa-btn">💬 <span id="wa-btn-txt">Tap to Share on WhatsApp</span></button>
+  <p class="swnote">Each share must go to a different contact or group. System verifies each share individually.</p>
+  <div class="svmsg" id="sv-msg"></div>
+  <p class="swprog" id="sw-prog">0 of 5 shares done</p>
+</div>
+
+<!-- CLAIM -->
+<div class="page" id="pg-claim">
+  <div class="clmico">🏆</div>
+  <h2 style="font-size:22px;margin-bottom:4px;">Reward Unlocked!</h2>
+  <p style="font-size:13px;color:var(--mu);margin-bottom:10px;">Your session bonus has been confirmed and credited</p>
+  <div class="clmamt" id="clm-amt">₦8,500</div>
+  <div class="clmlbl">Credited to your balance</div>
+  <div class="clmbox">
+    <div class="clmrow"><span class="clml">Chat session</span><span class="clmr" id="clm-chat">₦6,000</span></div>
+    <div class="clmrow"><span class="clml">Share bonuses</span><span class="clmr" id="clm-shares">₦2,500</span></div>
+    <div class="clmrow"><span class="clml">New balance</span><span class="clmr" id="clm-bal">₦8,500</span></div>
+  </div>
+  <button class="gbtn" id="claim-continue-btn" style="max-width:320px;">Continue to Dashboard</button>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="page" id="pg-lb">
+  <div class="itopbar">
+    <button class="ibk" id="lb-back-btn">←</button>
+    <div class="ilogo">Top Earners</div>
+    <div style="width:32px;"></div>
+  </div>
+  <div style="padding:16px;">
+    <div style="background:rgba(0,200,150,.08);border:1px solid var(--g);border-radius:14px;padding:13px;text-align:center;margin-bottom:13px;">
+      <div style="font-size:12px;color:var(--mu);">Your current rank</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--g);" id="my-rank">#312</div>
+    </div>
+    <div id="lb-list"></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="pg-profile">
+  <div class="itopbar">
+    <button class="ibk" id="prof-back-btn">←</button>
+    <div class="ilogo">My Profile</div>
+    <div style="width:32px;"></div>
+  </div>
+  <div class="phd">
+    <div class="pav3">👤</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;" id="prof-name">User</div>
+    <div style="font-size:13px;color:var(--mu);margin-top:3px;" id="prof-email">user@chat-to-earn.com</div>
+    <div style="font-size:12px;color:var(--g);margin-top:5px;" id="prof-day">Day 1 of 3</div>
+  </div>
+  <div class="pbody">
+    <div class="psr">
+      <div class="pst"><div class="psv" id="ps-bal">₦2,000</div><div class="psl">Balance</div></div>
+      <div class="pst"><div class="psv" id="ps-chats">0</div><div class="psl">Chats</div></div>
+      <div class="pst"><div class="psv" id="ps-day">Day 1</div><div class="psl">Current</div></div>
+    </div>
+    <div class="mrow" id="prof-kyc"><div class="mico">🪪</div><div class="mlbl">Complete KYC Verification</div><div class="marr">→</div></div>
+    <div class="mrow" id="prof-wd"><div class="mico">💸</div><div class="mlbl">Withdraw Earnings</div><div class="marr">→</div></div>
+    <div class="mrow" id="prof-lb"><div class="mico">🏆</div><div class="mlbl">View Leaderboard</div><div class="marr">→</div></div>
+    <div class="mrow" id="prof-terms"><div class="mico">📄</div><div class="mlbl">Terms & Conditions</div><div class="marr">→</div></div>
+    <div class="mrow" id="prof-tg"><div class="mico">✈️</div><div class="mlbl">Join Our Community</div><div class="marr">→</div></div>
+    <div class="mrow" id="prof-support"><div class="mico">💬</div><div class="mlbl">Contact Support</div><div class="marr">→</div></div>
+    <div class="mrow" id="prof-logout" style="border-color:var(--red);margin-top:8px;"><div class="mico">🚪</div><div class="mlbl" style="color:var(--red);">Logout</div><div class="marr" style="color:var(--red);">→</div></div>
+  </div>
+</div>
+
+<!-- TERMS -->
+<div class="page" id="pg-terms">
+  <div class="itopbar">
+    <button class="ibk" id="terms-back-btn">←</button>
+    <div class="ilogo">Terms & Conditions</div>
+    <div style="width:32px;"></div>
+  </div>
+  <div class="tbody">
+    <p style="font-size:13px;color:var(--mu);margin-top:8px;">Last updated: 2025. By using Chat-to-Earn you agree to these terms.</p>
+    <h3>1. Eligibility</h3><p>Open to Nigerian residents aged 18+. One account per person per device. Multiple accounts result in permanent ban.</p>
+    <h3>2. Earnings</h3><p>Users earn by completing chat sessions, daily tasks, and sharing. Earnings are credited in real time and subject to verification before withdrawal.</p>
+    <h3>3. Daily Login</h3><p>You must log in and complete at least 2 chat sessions every day. Missing a day resets your balance to zero. No exceptions.</p>
+    <h3>4. KYC Verification</h3><p>Identity verification is required before any withdrawal. Must be completed through our verified partner.</p>
+    <h3>5. Sharing</h3><p>Required WhatsApp shares must be completed after each session to unlock session bonuses. Each share is individually verified.</p>
+    <h3>6. Withdrawals</h3><p>Minimum ₦50,000. Available after Day 3 and KYC approval. Processing time up to 24 hours.</p>
+    <h3>7. Prohibited Activity</h3><p>Bots, scripts, VPNs or automated tools are strictly prohibited and result in immediate termination.</p>
+    <h3>8. Contact</h3>
+    <p>Support: <span class="tl2" id="terms-support">[YOUR SUPPORT EMAIL]</span></p>
+    <p>Community: <span class="tl2" id="terms-tg">[YOUR TELEGRAM LINK]</span></p>
+  </div>
+</div>
+
+<!-- WITHDRAW -->
+<div class="page" id="pg-wd">
+  <div class="wdwrap">
+    <button class="bbtn" id="wd-back-btn">← Back</button>
+    <div class="wdcard">
+      <h2>Withdraw Cash 💸</h2>
+      <p class="fsub">Minimum ₦50,000 · KYC required · Available after Day 3</p>
+      <div class="wdbal"><div class="wdbv" id="wd-bal">₦2,000</div><div class="wdbl">Available Balance</div></div>
+      <div class="wdlock" id="wd-lock">Complete 3 full days to unlock withdrawal.</div>
+      <div class="kycreq" id="kyc-req-wd">🪪 KYC verification required — Tap to complete now</div>
+      <div class="wdf"><label>Bank Name</label>
+        <select id="wd-bank">
+          <option value="">Select Bank</option>
+          <option>Opay</option><option>Palmpay</option><option>GTBank</option>
+          <option>Access Bank</option><option>First Bank</option><option>Zenith Bank</option>
+          <option>UBA</option><option>Kuda Bank</option><option>Moniepoint</option><option>Sterling Bank</option>
+        </select>
+      </div>
+      <div class="wdf"><label>Account Number</label><input type="tel" id="wd-acct" placeholder="10-digit account number" maxlength="10"></div>
+      <div class="wdf"><label>Account Name</label><input type="text" id="wd-aname" placeholder="Verified automatically"></div>
+      <div class="wdf"><label>Amount (₦)</label><input type="number" id="wd-amount" placeholder="Minimum ₦50,000"></div>
+      <button class="fsub-btn" id="wd-submit">Request Withdrawal</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESSING -->
+<div class="page" id="pg-proc">
+  <div class="spinner"></div>
+  <h2 style="font-size:20px;margin-bottom:8px;">Processing Withdrawal</h2>
+  <p style="font-size:13px;color:var(--mu);">Please wait while we verify and process</p>
+  <div class="psteps">
+    <div class="pstep done">Verifying account details</div>
+    <div class="pstep" id="ps2">Confirming KYC status</div>
+    <div class="pstep" id="ps3">Initiating bank transfer</div>
+    <div class="pstep" id="ps4">Transfer submitted</div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="page" id="pg-success">
+  <div style="font-size:68px;margin-bottom:16px;">🎉</div>
+  <h2 style="font-size:24px;margin-bottom:8px;">Withdrawal Submitted!</h2>
+  <p style="font-size:13px;color:var(--mu);margin-bottom:20px;max-width:270px;line-height:1.6;">Your request has been received. Payment arrives within 24 hours.</p>
+  <div style="background:var(--s);border:1px solid var(--br);border-radius:16px;padding:20px;width:100%;max-width:300px;margin-bottom:22px;">
+    <div style="font-size:12px;color:var(--mu);margin-bottom:4px;">Amount Requested</div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--g);" id="succ-amt">₦50,000</div>
+    <div style="font-size:12px;color:var(--mu);margin-top:6px;">Processing: up to 24 hours</div>
+  </div>
+  <button class="gbtn" id="success-back-btn" style="max-width:300px;">Back to Dashboard</button>
+</div>
+
+<script>
+// ═══════ LINKS — fill in your direct links ═══════
+// SPOT 1: Day modal ad     → open in modalAdClick()
+// SPOT 2: Landing ad 1     → open in land-ad1 click
+// SPOT 3: Landing ad 2     → open in land-ad2 click
+// SPOT 4: KYC              → open in kyc banner / kyc-req-wd click
+// SPOT 5: Dashboard ad 1   → open in dash-ad1 click
+// SPOT 6: Video task       → open in video-link click
+// SPOT 7: Offer task       → open in offer-link click
+// SPOT 8: Dashboard ad 2   → open in dash-ad2 click
+const LINKS = {
+  modal: 'YOUR_LINK_1',
+  land1: 'YOUR_LINK_2',
+  land2: 'YOUR_LINK_3',
+  kyc:   'YOUR_KYC_LINK',
+  dash1: 'YOUR_LINK_5',
+  video: 'YOUR_LINK_6',
+  offer: 'YOUR_LINK_7',
+  dash2: 'YOUR_LINK_8',
+};
+const TELEGRAM = 'YOUR_TELEGRAM_LINK';
+const SUPPORT  = 'support@chat-to-earn.com';
+
+function openLink(key) {
+  var l = LINKS[key];
+  if (key === 'kyc') {
+    if (S.kycDone) { toast('KYC already verified!'); return; }
+    if (l && l.indexOf('YOUR') < 0) { window.open(l, '_blank'); }
+    // Mark KYC done after 4 seconds (simulates returning from KYC page)
+    setTimeout(function() {
+      S.kycDone = true;
+      document.getElementById('kyc-banner').style.display = 'none';
+      document.getElementById('kyc-req-wd').style.display = 'none';
+      showKycVerified();
+      updateUI();
+    }, 4000);
+    return;
+  }
+  // For ad links — just open, no fake money
+  if (l && l.indexOf('YOUR') < 0) window.open(l, '_blank');
+  // Show temptation message
+  showTemptMsg(key);
+}
+function showKycVerified() {
+  var el = document.getElementById('kyc-banner');
+  if (el) {
+    el.style.background = 'linear-gradient(135deg,rgba(0,200,150,.08),rgba(0,200,150,.03))';
+    el.style.borderColor = 'var(--g)';
+    el.innerHTML = '<div class="kyctop"><div class="kycico">✅</div><div class="kyctitle" style="color:var(--g)">KYC Verified — You can now withdraw!</div></div><div class="kycsub">Your identity has been verified. Withdrawal is now unlocked once you reach Day 3 and ₦50,000.</div>';
+    el.style.display = 'block';
+  }
+  toast('KYC Verified! You can now withdraw on Day 3.');
+}
+var TEMPT_MSGS = {
+  dash1: '🔥 Limited spots available! This offer closes soon.',
+  dash2: '⚡ 847 Chat-to-Earn members just claimed this today!',
+  video: '🎬 Watch now — takes 30 seconds and unlocks a bonus task!',
+  offer: '💰 This offer expires in 2 hours. Do not miss out!',
+  land1: '🚀 Join the thousands of Nigerians earning daily!',
+  land2: '👀 Members who complete this earn 3x more per day!',
+  modal: '🎯 Exclusive — only shown to new members today!',
+};
+function showTemptMsg(key) {
+  var msg = TEMPT_MSGS[key];
+  if (msg) toast(msg);
+}
+
+// BACK TRAP
+history.pushState(null, '', location.href);
+window.addEventListener('popstate', function() { history.pushState(null, '', location.href); });
+
+// DEVICE FINGERPRINT
+function getDevId() {
+  var d = localStorage.getItem('cte_did');
+  if (!d) { d = 'D' + Date.now() + Math.random().toString(36).slice(2, 8); localStorage.setItem('cte_did', d); }
+  return d;
+}
+function isDupe(email) {
+  var d = getDevId(), r = JSON.parse(localStorage.getItem('cte_regs') || '{}');
+  if (r[d] && r[d] !== email) return true;
+  r[d] = email; localStorage.setItem('cte_regs', JSON.stringify(r)); return false;
+}
+
+// STATE
+var S = { balance:2000, name:'Friend', email:'', day:1, dayEarnings:[2000,0,0], chats:0, shares:0, tasks:{checkin:false,video:false,offer:false}, pendingUnlock:0, swDone:0, swTarget:5, chatMsgCount:0, chatEarned:0, lastLogin:new Date().toDateString(), missedDay:false, kycDone:false, hasWithdrawn:false, capWarningShown:false };
+
+// PAGE NAVIGATION
+function pg(id) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); });
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// DAY MODAL
+function showDayModal() {
+  var msgs = [
+    {ico:'🎉', title:'Welcome to Day 1!', body:'Your ₦2,000 bonus is ready. Complete your chats and tasks today!', target:'Target: ₦15,000'},
+    {ico:'🔥', title:'Day 2 — Keep Going!', body:'You made it to Day 2! Complete your tasks. Halfway to withdrawal!', target:'Target: ₦17,000'},
+    {ico:'💸', title:'Day 3 — Withdrawal Day!', body:'Today is the day! Complete tasks and unlock your withdrawal!', target:'Withdraw Today!'},
+  ];
+  var m = msgs[Math.min(S.day - 1, 2)];
+  document.getElementById('dm-ico').textContent = m.ico;
+  document.getElementById('dm-title').textContent = m.title;
+  document.getElementById('dm-body').textContent = m.body;
+  document.getElementById('dm-target').textContent = m.target;
+  document.getElementById('day-modal').classList.add('show');
+}
+function closeDayModal() { document.getElementById('day-modal').classList.remove('show'); }
+
+// HELPERS
+function showErr(id, msg) { var el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
+function hideErr(id) { document.getElementById(id).style.display = 'none'; }
+function fmt(n) { return '₦' + Math.floor(n).toLocaleString(); }
+function addBal(n) {
+  var dailyCap = S.hasWithdrawn ? 999999 : 17000;
+  var dayE = S.dayEarnings[S.day - 1];
+  var allowed = Math.min(n, Math.max(0, dailyCap - dayE));
+  if (allowed <= 0) {
+    if (!S.capWarningShown) {
+      S.capWarningShown = true;
+      showCapWarning();
+    }
+    return;
+  }
+  S.balance += allowed;
+  S.dayEarnings[S.day - 1] += allowed;
+  updateUI();
+}
+function showCapWarning() {
+  var msg = S.hasWithdrawn
+    ? 'Daily limit reached! Come back tomorrow to earn more.'
+    : 'Daily limit reached! Complete your first withdrawal to unlock unlimited earnings.';
+  toast(msg);
+  // Show unlock banner
+  var banner = document.getElementById('unlock-banner');
+  if (banner) banner.style.display = 'block';
+}
+function toast(msg) { var t = document.getElementById('TT'); t.textContent = msg; t.classList.add('on'); setTimeout(function() { t.classList.remove('on'); }, 2800); }
+function showEarnToast(msg) { var t = document.getElementById('ET'); t.textContent = msg; t.classList.add('on'); setTimeout(function() { t.classList.remove('on'); }, 2000); }
+
+// ALL BUTTON EVENTS — attached here, not in HTML
+document.getElementById('modal-close-btn').addEventListener('click', closeDayModal);
+document.getElementById('modal-ad').addEventListener('click', function() { openLink('modal'); });
+
+document.getElementById('land-signup-btn').addEventListener('click', function() { pg('pg-register'); });
+document.getElementById('land-login-btn').addEventListener('click', function() { pg('pg-login'); });
+document.getElementById('land-ad1').addEventListener('click', function() { openLink('land1'); });
+document.getElementById('land-ad2').addEventListener('click', function() { openLink('land2'); });
+
+document.getElementById('reg-back-btn').addEventListener('click', function() { pg('pg-landing'); });
+document.getElementById('go-login').addEventListener('click', function() { pg('pg-login'); });
+document.getElementById('reg-submit').addEventListener('click', function() {
+  var name  = document.getElementById('reg-name').value.trim();
+  var email = document.getElementById('reg-email').value.trim();
+  var pass  = document.getElementById('reg-pass').value.trim();
+  if (!name)              { showErr('reg-err', 'Please enter your full name'); return; }
+  if (!email || email.indexOf('@') < 0) { showErr('reg-err', 'Please enter a valid email address'); return; }
+  if (pass.length < 6)   { showErr('reg-err', 'Password must be at least 6 characters'); return; }
+  if (isDupe(email))     { showErr('reg-err', 'An account already exists on this device.'); return; }
+  hideErr('reg-err');
+  S.name = name.split(' ')[0]; S.email = email; S.lastLogin = new Date().toDateString();
+  document.getElementById('wname').textContent = S.name;
+  updateUI(); pg('pg-welcome');
+});
+
+document.getElementById('login-back-btn').addEventListener('click', function() { pg('pg-landing'); });
+document.getElementById('go-register').addEventListener('click', function() { pg('pg-register'); });
+document.getElementById('login-submit').addEventListener('click', function() {
+  var email = document.getElementById('login-email').value.trim();
+  var pass  = document.getElementById('login-pass').value.trim();
+  if (!email || email.indexOf('@') < 0) { showErr('login-err', 'Please enter a valid email address'); return; }
+  if (!pass)  { showErr('login-err', 'Please enter your password'); return; }
+  hideErr('login-err');
+  var today = new Date().toDateString();
+  if (S.lastLogin && S.lastLogin !== today) {
+    var diff = Math.floor((new Date(today) - new Date(S.lastLogin)) / 86400000);
+    if (diff > 1) { S.balance=2000; S.day=1; S.dayEarnings=[2000,0,0]; S.chats=0; S.shares=0; S.tasks={checkin:false,video:false,offer:false}; S.missedDay=true; }
+    else { S.day = Math.min(3, S.day + 1); S.missedDay = false; }
+  }
+  S.lastLogin = today; S.name = email.split('@')[0]; S.email = email;
+  updateUI(); pg('pg-dash'); setTimeout(showDayModal, 600);
+});
+
+document.getElementById('start-btn').addEventListener('click', function() { pg('pg-dash'); setTimeout(showDayModal, 500); });
+
+// DASHBOARD buttons
+document.getElementById('kyc-banner').addEventListener('click', function() { openLink('kyc'); });
+document.getElementById('dash-ad1').addEventListener('click', function() { openLink('dash1'); });
+document.getElementById('dash-ad2').addEventListener('click', function() { openLink('dash2'); });
+document.getElementById('video-link').addEventListener('click', function(e) { e.stopPropagation(); openLink('video'); });
+document.getElementById('offer-link').addEventListener('click', function(e) { e.stopPropagation(); openLink('offer'); });
+document.getElementById('tsk-checkin').addEventListener('click', doCheckin);
+document.getElementById('tsk-video').addEventListener('click', doVideoTask);
+document.getElementById('tsk-offer').addEventListener('click', doOfferTask);
+
+// NAV
+document.getElementById('nb-home').addEventListener('click', function() { setNav(this); });
+document.getElementById('nb-chat').addEventListener('click', function() { setNav(this); scrollToPartners(); });
+document.getElementById('nb-lb').addEventListener('click', function() { showLB(); });
+document.getElementById('nb-wd').addEventListener('click', function() { pg('pg-wd'); });
+document.getElementById('nb-prof').addEventListener('click', function() { pg('pg-profile'); });
+
+// CHAT
+document.getElementById('chat-back-btn').addEventListener('click', function() { pg('pg-dash'); });
+document.getElementById('send-btn').addEventListener('click', sendMsg);
+document.getElementById('chat-inp').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
+
+// SHARE
+document.getElementById('wa-btn').addEventListener('click', doShare);
+
+// CLAIM
+document.getElementById('claim-continue-btn').addEventListener('click', function() { pg('pg-dash'); });
+
+// LB / PROFILE
+document.getElementById('lb-back-btn').addEventListener('click', function() { pg('pg-dash'); });
+document.getElementById('prof-back-btn').addEventListener('click', function() { pg('pg-dash'); });
+document.getElementById('terms-back-btn').addEventListener('click', function() { pg('pg-profile'); });
+document.getElementById('prof-kyc').addEventListener('click', function() { openLink('kyc'); });
+document.getElementById('prof-wd').addEventListener('click', function() { pg('pg-wd'); });
+document.getElementById('prof-lb').addEventListener('click', showLB);
+document.getElementById('prof-terms').addEventListener('click', function() { pg('pg-terms'); });
+document.getElementById('prof-tg').addEventListener('click', function() { window.open(TELEGRAM, '_blank'); });
+document.getElementById('prof-support').addEventListener('click', function() { toast('Support: ' + SUPPORT); });
+document.getElementById('prof-logout').addEventListener('click', function() { pg('pg-landing'); });
+document.getElementById('terms-support').addEventListener('click', function() { toast('Support: ' + SUPPORT); });
+document.getElementById('terms-tg').addEventListener('click', function() { window.open(TELEGRAM, '_blank'); });
+
+// WITHDRAW
+document.getElementById('wd-back-btn').addEventListener('click', function() { pg('pg-dash'); });
+document.getElementById('kyc-req-wd').addEventListener('click', function() { openLink('kyc'); });
+document.getElementById('wd-submit').addEventListener('click', doWithdraw);
+document.getElementById('success-back-btn').addEventListener('click', function() { pg('pg-dash'); });
+
+// UI UPDATE
+function updateUI() {
+  document.getElementById('top-bal').innerHTML = fmt(S.balance) + ' <span>Your balance</span>';
+  document.getElementById('bal-amt').textContent = fmt(S.balance);
+  document.getElementById('wd-bal').textContent  = fmt(S.balance);
+  document.getElementById('st-chats').textContent  = S.chats;
+  document.getElementById('st-shares').textContent = S.shares;
+  document.getElementById('st-day').textContent    = S.day;
+  document.getElementById('ps-bal').textContent    = fmt(S.balance);
+  document.getElementById('ps-chats').textContent  = S.chats;
+  document.getElementById('ps-day').textContent    = 'Day ' + S.day;
+  document.getElementById('prof-name').textContent = S.name;
+  document.getElementById('prof-email').textContent = S.email || 'user@chat-to-earn.com';
+  document.getElementById('prof-day').textContent  = 'Day ' + S.day + ' of 3';
+  document.getElementById('my-rank').textContent   = '#' + Math.max(1, 312 - S.chats * 4);
+  var targets = [15000, 17000, 50000], target = targets[S.day - 1], dayE = S.dayEarnings[S.day - 1];
+  document.getElementById('pfill').style.width = Math.min(96, Math.floor((dayE / target) * 100)) + '%';
+  document.getElementById('dp-title').textContent = 'Day ' + S.day + ' of 3';
+  document.getElementById('dp-badge').textContent = 'DAY ' + S.day;
+  document.getElementById('dp-sub').textContent = fmt(dayE) + ' earned today of ' + fmt(target) + ' target';
+  document.getElementById('bal-sub').textContent = 'Day ' + S.day + ' target: ' + fmt(target) + (S.day < 3 ? ' · Withdraw on Day 3' : ' · Ready to withdraw!');
+  document.getElementById('missed-bar').style.display = S.missedDay ? 'block' : 'none';
+  document.getElementById('kyc-banner').style.display  = S.kycDone ? 'none' : 'block';
+  document.getElementById('kyc-req-wd').style.display  = S.kycDone ? 'none' : 'block';
+  var canWd = S.day >= 3 && S.balance >= 50000 && S.kycDone;
+  var wdl = document.getElementById('wd-lock');
+  wdl.style.display = canWd ? 'none' : 'block';
+  if (!canWd) wdl.textContent = !S.kycDone ? 'Complete your KYC first. Tap the banner above.' : S.day < 3 ? 'Withdrawal unlocks on Day 3. Currently Day ' + S.day + '.' : 'You need ₦50,000 minimum. Balance: ' + fmt(S.balance);
+  renderPartners();
+}
+
+// PARTNERS
+var P = [
+  {n:'Sarah M.',f:'🇬🇧',l:'London, UK',e:'👩‍🦰',t:'Travel, Business',s:'You are Sarah, 28, marketing manager from London. Warm and genuinely curious about Nigeria. Max 2 short casual sentences per reply. No dashes.'},
+  {n:'James K.',f:'🇺🇸',l:'New York, USA',e:'👨‍💼',t:'Tech, Finance',s:'You are James, 31, software engineer from NYC. Energetic, loves tech. Max 2 short sentences. Casual texting.'},
+  {n:'Emma L.',f:'🇨🇦',l:'Toronto, Canada',e:'👩‍🎓',t:'Food, Health',s:'You are Emma, 26, nutrition student from Toronto. Bubbly, loves Nigerian food. Max 2 sentences.'},
+  {n:'Liam P.',f:'🇦🇺',l:'Sydney, Australia',e:'🧑‍🎤',t:'Music, Sports',s:'You are Liam, 29, music producer from Sydney. Loves Afrobeats. Max 2 laid back sentences.'},
+  {n:'Sophia R.',f:'🇩🇪',l:'Berlin, Germany',e:'👩‍💻',t:'Tech, Art',s:'You are Sophia, 27, UX designer from Berlin. Loves African art. Max 2 natural sentences.'},
+  {n:'Noah T.',f:'🇺🇸',l:'Houston, USA',e:'👨‍🔬',t:'Science, NBA',s:'You are Noah, 33, teacher from Houston. Loves sports. Max 2 casual sentences.'},
+  {n:'Olivia F.',f:'🇬🇧',l:'Manchester, UK',e:'👩‍🏫',t:'Education',s:'You are Olivia, 30, teacher from Manchester. Warm. Max 2 short sentences.'},
+  {n:'Ethan B.',f:'🇨🇦',l:'Vancouver, Canada',e:'🧑‍💼',t:'Fitness',s:'You are Ethan, personal trainer from Vancouver. Casual. Max 2 sentences.'},
+  {n:'Ava W.',f:'🇺🇸',l:'Los Angeles, USA',e:'👩‍🎨',t:'Fashion, Film',s:'You are Ava, 25, fashion blogger from LA. Max 2 fun sentences.'},
+  {n:'Mason C.',f:'🇦🇺',l:'Melbourne, Australia',e:'👨‍🍳',t:'Food, Travel',s:'You are Mason, chef from Melbourne. Excited about Nigerian food. Max 2 sentences.'},
+  {n:'Isabella J.',f:'🇫🇷',l:'Paris, France',e:'👩‍🎭',t:'Art, Culture',s:'You are Isabella, 29, art curator from Paris. Warm. Max 2 sentences.'},
+  {n:'Logan H.',f:'🇺🇸',l:'Chicago, USA',e:'🧑‍🎤',t:'Music, Comedy',s:'You are Logan, comedian from Chicago. Funny and casual. Max 2 sentences.'},
+  {n:'Mia S.',f:'🇩🇪',l:'Munich, Germany',e:'👩‍⚕️',t:'Medicine',s:'You are Mia, medical student from Munich. Curious. Max 2 sentences.'},
+  {n:'Lucas N.',f:'🇺🇸',l:'Miami, USA',e:'🧑‍💻',t:'Crypto, Tech',s:'You are Lucas, crypto trader from Miami. Max 2 casual sentences.'},
+  {n:'Charlotte A.',f:'🇨🇦',l:'Montreal, Canada',e:'👩‍🌾',t:'Food',s:'You are Charlotte, food photographer from Montreal. Max 2 warm sentences.'},
+  {n:'Henry M.',f:'🇬🇧',l:'Bristol, UK',e:'👨‍🎨',t:'Design, Music',s:'You are Henry, graphic designer from Bristol. Loves Afrobeats. Max 2 casual sentences.'},
+  {n:'Amelia D.',f:'🇦🇺',l:'Brisbane, Australia',e:'👩‍💼',t:'Business',s:'You are Amelia, entrepreneur from Brisbane. Max 2 short sentences.'},
+  {n:'Sebastian V.',f:'🇩🇪',l:'Hamburg, Germany',e:'👨‍🏭',t:'Engineering',s:'You are Sebastian, engineer from Hamburg who loves football. Max 2 sentences.'},
+  {n:'Harper G.',f:'🇺🇸',l:'Seattle, USA',e:'👩‍🔬',t:'Data, Tech',s:'You are Harper, data scientist from Seattle. Friendly. Max 2 sentences.'},
+  {n:'Jack R.',f:'🇨🇦',l:'Calgary, Canada',e:'🧑‍🏔️',t:'Adventure',s:'You are Jack, outdoor guide from Calgary. Bold and fun. Max 2 sentences.'},
+  {n:'Scarlett T.',f:'🇺🇸',l:'Nashville, USA',e:'👩‍🎵',t:'Music',s:'You are Scarlett from Nashville. Loves Afrobeats now. Max 2 sentences.'},
+  {n:'Daniel O.',f:'🇬🇧',l:'Edinburgh, UK',e:'👨‍🏫',t:'History',s:'You are Daniel, history lecturer from Edinburgh. Max 2 engaging sentences.'},
+  {n:'Aria F.',f:'🇫🇷',l:'Lyon, France',e:'👩‍🍳',t:'Cooking',s:'You are Aria, chef from Lyon who loves Nigerian food. Max 2 warm sentences.'},
+  {n:'Matthew E.',f:'🇺🇸',l:'Boston, USA',e:'🧑‍⚕️',t:'Medicine',s:'You are Matthew, medical resident from Boston. Max 2 short sentences.'},
+  {n:'Luna K.',f:'🇩🇪',l:'Frankfurt, Germany',e:'👩‍🎓',t:'Languages',s:'You are Luna, linguistics student who studies African languages. Max 2 excited sentences.'},
+  {n:'Ryan B.',f:'🇦🇺',l:'Perth, Australia',e:'👨‍💻',t:'Gaming, Tech',s:'You are Ryan, game developer from Perth. Max 2 casual sentences.'},
+  {n:'Zoe M.',f:'🇨🇦',l:'Ottawa, Canada',e:'👩‍🏛️',t:'Law',s:'You are Zoe, law student from Ottawa. Max 2 short sentences.'},
+  {n:'Tyler W.',f:'🇺🇸',l:'Austin, USA',e:'🧑‍🎸',t:'Music, Tech',s:'You are Tyler, musician from Austin who loves Afrobeats. Max 2 casual sentences.'},
+  {n:'Nora J.',f:'🇬🇧',l:'Liverpool, UK',e:'👩‍🏥',t:'Nursing',s:'You are Nora, nurse from Liverpool. Caring and warm. Max 2 sentences.'},
+  {n:'Elijah C.',f:'🇺🇸',l:'Atlanta, USA',e:'👨‍🎤',t:'Music, Fashion',s:'You are Elijah, music director from Atlanta. Max 2 energetic sentences.'},
+  {n:'Hannah S.',f:'🇦🇺',l:'Adelaide, Australia',e:'👩‍🎓',t:'Psychology',s:'You are Hannah, psychology student from Adelaide. Warm listener. Max 2 sentences.'},
+  {n:'Owen T.',f:'🇨🇦',l:'Toronto, Canada',e:'👨‍🍳',t:'Food, Basketball',s:'You are Owen, restaurant owner from Toronto. Max 2 casual sentences.'},
+  {n:'Grace L.',f:'🇫🇷',l:'Bordeaux, France',e:'👩‍🍷',t:'Wine, Travel',s:'You are Grace, sommelier from Bordeaux. Max 2 short sentences.'},
+  {n:'Leo H.',f:'🇩🇪',l:'Cologne, Germany',e:'👨‍🎨',t:'Art, Music',s:'You are Leo, street artist from Cologne who loves Afrobeats. Max 2 natural sentences.'},
+  {n:'Victoria P.',f:'🇬🇧',l:'Oxford, UK',e:'👩‍🔬',t:'Research',s:'You are Victoria, research scientist from Oxford. Max 2 thoughtful sentences.'},
+  {n:'Julian M.',f:'🇺🇸',l:'San Francisco, USA',e:'🧑‍💼',t:'Startups',s:'You are Julian, startup founder from SF. Interested in African tech. Max 2 energetic sentences.'},
+  {n:'Chloe R.',f:'🇨🇦',l:'Winnipeg, Canada',e:'👩‍🎨',t:'Art',s:'You are Chloe, illustrator from Winnipeg. Max 2 casual sentences.'},
+  {n:'Nathan V.',f:'🇦🇺',l:'Canberra, Australia',e:'👨‍💼',t:'Finance',s:'You are Nathan, financial advisor from Canberra. Max 2 short sentences.'},
+  {n:'Penelope W.',f:'🇬🇧',l:'Leeds, UK',e:'👩‍💻',t:'Cybersecurity',s:'You are Penelope, cybersecurity analyst from Leeds. Max 2 sentences.'},
+  {n:'Samuel A.',f:'🇺🇸',l:'Dallas, USA',e:'👨‍🏈',t:'Football',s:'You are Samuel, sports agent from Dallas. Max 2 direct sentences.'},
+  {n:'Isla F.',f:'🇨🇦',l:'Halifax, Canada',e:'👩‍🎤',t:'Poetry',s:'You are Isla, poet from Halifax. Max 2 short sentences.'},
+  {n:'Chris N.',f:'🇩🇪',l:'Stuttgart, Germany',e:'👨‍🔧',t:'Engineering',s:'You are Chris, automotive engineer from Stuttgart. Max 2 casual sentences.'},
+  {n:'Layla B.',f:'🇫🇷',l:'Marseille, France',e:'👩‍🌊',t:'Ocean, Travel',s:'You are Layla, marine biologist from Marseille. Max 2 warm sentences.'},
+  {n:'Aaron G.',f:'🇦🇺',l:'Gold Coast, Australia',e:'🏄',t:'Surfing',s:'You are Aaron, surf instructor who loves Afrobeats. Max 2 fun sentences.'},
+  {n:'Stella K.',f:'🇬🇧',l:'Cambridge, UK',e:'👩‍🔬',t:'Science',s:'You are Stella, biochemist from Cambridge. Max 2 short sentences.'},
+    {n:'Dylan R.',f:'🇺🇸',l:'Portland, USA',e:'🧑‍🌾',t:'Environment',s:'You are Dylan, environmental activist from Portland. Max 2 sentences.'},
+  {n:'Aurora M.',f:'🇨🇦',l:'Edmonton, Canada',e:'👩‍🎓',t:'Medicine, Art',s:'You are Aurora, medical student who paints. Max 2 warm sentences.'},
+  {n:'Felix T.',f:'🇩🇪',l:'Dresden, Germany',e:'👨‍🎓',t:'Philosophy',s:'You are Felix, philosophy student who loves Fela Kuti. Max 2 thoughtful sentences.'},
+  {n:'Ruby H.',f:'🇦🇺',l:'Hobart, Australia',e:'👩‍🍳',t:'Baking',s:'You are Ruby, pastry chef curious about Nigerian desserts. Max 2 warm sentences.'},
+  {n:'Oscar J.',f:'🇬🇧',l:'Birmingham, UK',e:'👨‍🎭',t:'Theatre',s:'You are Oscar, theatre director from Birmingham. Max 2 engaging sentences.'},
+];
+
+var OPENS = ['Hey! So glad to finally connect with someone from Nigeria. I have always been curious about life there. How are you?','Hi! Oh wow Nigeria! I have been wanting to talk to someone from there. What part are you from?','Hello! I have heard so much about Nigeria lately. What is daily life like where you are?','Hey there! Really happy to chat with you. Tell me something interesting about your city!','Hi! I got into Afrobeats last year and it made me so curious about Nigeria. What do you do for fun?','Hey! A friend visited Lagos recently and could not stop talking about it. What is it really like?','Hello! I have been reading about Nigeria. Is the tech scene as exciting as they say?'];
+var FALLS = ['Oh that is really interesting! Tell me more about that.','Wow I had no idea! What else is life like over there?','Honestly that sounds amazing. Nigeria is on my travel list now.','Ha that made me smile! You have a great personality.','Really? I would never have guessed. What else should I know?','That makes total sense. I am learning so much from this chat.','No way! That is wild. Do most people there feel the same?','I genuinely enjoy this. Nigeria sounds so vibrant.','This is exactly why I love chatting with people from different countries.','You have officially made my day with that.'];
+
+var TESTIS = [
+  {e:'👩',n:'Chioma A.',l:'Lagos',s:'★★★★★',t:'I could not believe it when the money hit my Opay. Three days of chatting and I withdrew 52,000. This is the realest thing online.',a:'52,000 received'},
+  {e:'👨',n:'Emeka O.',l:'Abuja',s:'★★★★★',t:'I told my brother and he thought I was joking. Now he is on Day 2 himself. The money is real.',a:'58,000 received'},
+  {e:'👧',n:'Fatima B.',l:'Kano',s:'★★★★★',t:'As a student I needed something that works. Chat-to-Earn paid me within 20 hours of requesting.',a:'51,500 received'},
+  {e:'🧑',n:'Tunde M.',l:'Ibadan',s:'★★★★★',t:'Spent 3 days chatting with people from London and Canada. Interesting and real cash to GTBank.',a:'55,000 received'},
+  {e:'👩',n:'Ngozi C.',l:'Enugu',s:'★★★★★',t:'I had tried so many sites before. This one is different. I did not miss a day and it paid off.',a:'50,500 received'},
+  {e:'👨',n:'Chukwudi I.',l:'Rivers',s:'★★★★★',t:'Every time I shared after a chat my balance jumped. Hit 50,000 on day 3 and withdrew same day.',a:'62,000 received'},
+  {e:'👩',n:'Aisha D.',l:'Kaduna',s:'★★★★★',t:'Do not miss a day! I missed once and had to start over. Second time I was disciplined and got paid.',a:'51,000 received'},
+  {e:'🧑',n:'Bola F.',l:'Delta',s:'★★★★★',t:'My cousin sent me proof of payment first. Best decision I made this month to join.',a:'53,500 received'},
+  {e:'👨',n:'Seun A.',l:'Ogun',s:'★★★★★',t:'The chat sessions are genuinely interesting. I enjoyed every conversation and got real money.',a:'57,000 received'},
+  {e:'👩',n:'Adaeze N.',l:'Anambra',s:'★★★★★',t:'I shared with 5 friends and all of them have now received their payments. It is real.',a:'50,000 received'},
+  {e:'👨',n:'Kola E.',l:'Lagos',s:'★★★★★',t:'Three days went fast. The tasks and chats kept me engaged. Withdrawal processed in 18 hours.',a:'54,000 received'},
+  {e:'👩',n:'Grace U.',l:'Imo',s:'★★★★★',t:'I set alarms to log in every day. Could not afford to lose my balance. Day 3 was the sweetest.',a:'50,500 received'},
+  {e:'👨',n:'Yemi A.',l:'Lagos',s:'★★★★★',t:'At first I thought it was too good to be true. But my friend got paid first. Got mine Day 3.',a:'56,000 received'},
+  {e:'👩',n:'Blessing O.',l:'Rivers',s:'★★★★★',t:'The share bonuses alone added thousands to my balance. I love this platform so much.',a:'53,000 received'},
+];
+var PAYS = [
+  {e:'👩',n:'Chioma A. — Lagos',a:'52,000 to Opay',t:'23 mins ago'},
+  {e:'👨',n:'Emeka O. — Abuja',a:'58,500 to GTBank',t:'1 hr ago'},
+  {e:'👧',n:'Fatima B. — Kano',a:'51,000 to Palmpay',t:'2 hrs ago'},
+  {e:'🧑',n:'Tunde M. — Ibadan',a:'55,000 to Access Bank',t:'3 hrs ago'},
+  {e:'👩',n:'Ngozi C. — Enugu',a:'50,500 to First Bank',t:'4 hrs ago'},
+  {e:'👨',n:'Chukwudi I. — Rivers',a:'62,000 to Opay',t:'5 hrs ago'},
+  {e:'👩',n:'Blessing O. — Delta',a:'53,000 to Palmpay',t:'6 hrs ago'},
+  {e:'👨',n:'Yemi A. — Lagos',a:'56,000 to Kuda',t:'7 hrs ago'},
+];
+var LBD = [
+  {e:'👩',n:'Chioma A.',s:'Lagos',a:312000},{e:'👨',n:'Emeka O.',s:'Abuja',a:287500},
+  {e:'👧',n:'Fatima B.',s:'Kano',a:265000},{e:'🧑',n:'Tunde M.',s:'Ibadan',a:241000},
+  {e:'👩',n:'Ngozi C.',s:'Enugu',a:220000},{e:'👨',n:'Chukwudi I.',s:'Rivers',a:198000},
+  {e:'👩',n:'Aisha D.',s:'Kaduna',a:175000},{e:'🧑',n:'Bola F.',s:'Delta',a:163000},
+  {e:'👨',n:'Seun A.',s:'Ogun',a:149000},{e:'👩',n:'Adaeze N.',s:'Anambra',a:132000},
+];
+
+(function() {
+  document.getElementById('testi-list').innerHTML = TESTIS.map(function(t) {
+    return '<div class="tc"><div class="ttop"><div class="tav">'+t.e+'</div><div><div class="tnm">'+t.n+'</div><div class="tlc">'+t.l+'</div></div><div class="tst">'+t.s+'</div></div><div class="ttxt">'+t.t+'</div><span class="tamt">💸 ₦'+t.a+'</span></div>';
+  }).join('');
+  document.getElementById('pay-list').innerHTML = PAYS.map(function(p) {
+    return '<div class="prow"><div class="pav">'+p.e+'</div><div><div class="pnm">'+p.n+'</div><div class="pam">₦'+p.a+'</div></div><div class="ptm">'+p.t+'</div></div>';
+  }).join('');
+})();
+
+function setNav(el) { document.querySelectorAll('.nbtn').forEach(function(b){b.classList.remove('on');}); el.classList.add('on'); }
+function scrollToPartners() { setTimeout(function(){var el=document.getElementById('partners-list');if(el)el.scrollIntoView({behavior:'smooth'});},100); }
+
+function renderPartners() {
+  document.getElementById('partners-list').innerHTML = P.slice(0,10).map(function(p,i){
+    return '<div class="pcard" data-idx="'+i+'"><div class="pav2">'+p.e+'</div><div class="pinf"><div class="pnm2">'+p.n+'</div><div class="pfl">'+p.f+' '+p.l+'</div><div class="ptop">'+p.t+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;"><div class="pdot"></div><div class="pe">+₦6,000</div></div></div>';
+  }).join('');
+  document.querySelectorAll('.pcard').forEach(function(card){
+    card.addEventListener('click',function(){startChat(parseInt(this.getAttribute('data-idx')));});
+  });
+}
+
+function doCheckin(){if(S.tasks.checkin){toast('Already checked in!');return;}S.tasks.checkin=true;addBal(1000);document.getElementById('tsk-checkin').classList.add('done');showEarnToast('+₦1,000 check-in bonus!');}
+function doVideoTask(){if(S.tasks.video){toast('Already done today!');return;}S.tasks.video=true;addBal(1500);document.getElementById('tsk-video').classList.add('done');showEarnToast('+₦1,500 video bonus!');openLink('video');}
+function doOfferTask(){if(S.tasks.offer){toast('Already done today!');return;}S.tasks.offer=true;addBal(2000);document.getElementById('tsk-offer').classList.add('done');showEarnToast('+₦2,000 offer bonus!');openLink('offer');}
+
+var chatConvo=[],chatPending=false,curP=null;
+function startChat(idx){
+  curP=P[idx];S.chatMsgCount=0;S.chatEarned=0;chatConvo=[];
+  document.getElementById('c-name').textContent=curP.n+' '+curP.f;
+  document.getElementById('c-av').textContent=curP.e;
+  document.getElementById('c-stat').textContent='Online now';
+  document.getElementById('c-earn').textContent='₦0 earned';
+  document.getElementById('chat-inp').disabled=false;
+  document.getElementById('chat-inp').placeholder='Type your message...';
+  document.getElementById('chat-msgs').innerHTML='';
+  pg('pg-chat');
+  setTimeout(function(){addMsg('them',OPENS[Math.floor(Math.random()*OPENS.length)]);},3000+Math.random()*2000);
+}
+function addMsg(side,text){
+  var msgs=document.getElementById('chat-msgs');
+  var div=document.createElement('div');div.className='msg '+side;
+  var now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML='<div class="mbub">'+text+'</div><div class="mmeta">'+now+'</div>';
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+  chatConvo.push({role:side==='them'?'assistant':'user',content:text});
+}
+function showTyper(){var m=document.getElementById('chat-msgs'),d=document.createElement('div');d.className='msg them';d.id='typer';d.innerHTML='<div class="typewrap"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function rmTyper(){var t=document.getElementById('typer');if(t)t.remove();}
+
+async function sendMsg(){
+  if(chatPending)return;
+  var inp=document.getElementById('chat-inp');
+  var text=inp.value.trim();if(!text)return;
+  inp.value='';addMsg('me',text);S.chatMsgCount++;
+  var dayE = S.dayEarnings[S.day-1];
+  var cap = S.hasWithdrawn ? 999999 : 17000;
+  if (dayE >= cap) {
+    if (!S.capWarningShown) { S.capWarningShown=true; showCapWarning(); }
+    // disable input
+    document.getElementById('chat-inp').placeholder = 'Daily limit reached. Withdraw to unlock more.';
+    document.getElementById('chat-inp').disabled = true;
+    return;
+  }
+  var earn = Math.min(2000, cap - dayE);
+  S.chatEarned += earn; addBal(earn);
+  document.getElementById('c-earn').textContent = fmt(S.chatEarned) + ' earned';
+  showEarnToast('+₦' + earn.toLocaleString() + ' earned!');
+  if(S.chatMsgCount===3){
+    S.pendingUnlock=6000;S.swDone=0;
+    document.getElementById('sw-sess').textContent=fmt(S.pendingUnlock);
+    document.getElementById('sw-total').textContent=fmt(S.pendingUnlock);
+    document.getElementById('sv-msg').textContent='';
+    document.getElementById('sv-msg').className='svmsg';
+    document.getElementById('wa-btn').className='wabtn go';
+    document.getElementById('wa-btn-txt').textContent='Tap to Share on WhatsApp';
+    renderSwDots();
+    setTimeout(function(){rmTyper();addMsg('them','Hold on just a moment! I will be right back.');setTimeout(function(){pg('pg-share');},1000);},800);
+    return;
+  }
+  chatPending=true;showTyper();
+  var delay=2500+Math.random()*2000;
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:curP.s+' Write like a real person texting. Never start sentences with dashes.',messages:chatConvo.slice(-6)})});
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||FALLS[Math.floor(Math.random()*FALLS.length)];
+    reply=reply.replace(/[-–—]\s+/g,' ').trim();
+    await new Promise(function(r){setTimeout(r,delay);});rmTyper();addMsg('them',reply);
+  }catch(e){
+    await new Promise(function(r){setTimeout(r,delay);});rmTyper();addMsg('them',FALLS[Math.floor(Math.random()*FALLS.length)]);
+  }
+  chatPending=false;
+}
+
+function renderSwDots(){
+  var c=document.getElementById('sw-dots');c.innerHTML='';
+  for(var i=0;i<S.swTarget;i++){var d=document.createElement('div');d.className='sdot'+(i<S.swDone?' filled':'');d.textContent=i<S.swDone?'\u2713':(i+1);c.appendChild(d);}
+  document.getElementById('sw-done-txt').textContent=S.swDone+' / '+S.swTarget;
+  document.getElementById('sw-total').textContent=fmt(S.pendingUnlock+S.swDone*500);
+  document.getElementById('sw-prog').textContent=S.swDone+' of '+S.swTarget+' shares done';
+}
+function doShare(){
+  if(S.swDone>=S.swTarget){toast('All shares completed!');return;}
+  var msg=encodeURIComponent('I just earned '+fmt(S.balance)+' chatting with foreigners on Chat-to-Earn! Real money paid to your bank in 3 days. Join free: https://chat-to-earn.com');
+  window.open('https://wa.me/?text='+msg,'_blank');
+  var btn=document.getElementById('wa-btn'),btntxt=document.getElementById('wa-btn-txt'),sv=document.getElementById('sv-msg');
+  btn.className='wabtn wait';btntxt.textContent='Verifying your share...';sv.textContent='';sv.className='svmsg';
+  var vDelay=8000+Math.floor(Math.random()*4000);
+  setTimeout(function(){
+    S.swDone++;S.shares++;
+    var shareEarn=Math.min(500,Math.max(0,(S.hasWithdrawn?999999:17000)-S.dayEarnings[S.day-1]));
+    if(shareEarn>0){S.balance+=shareEarn;S.dayEarnings[S.day-1]+=shareEarn;updateUI();showEarnToast('+₦'+shareEarn+' share bonus!');}
+    sv.textContent='Share confirmed! +₦500 credited.';sv.className='svmsg svok';
+    btn.className='wabtn go';btntxt.textContent=S.swDone>=S.swTarget?'All Shares Done!':'Tap to Share Again';
+    renderSwDots();
+    if(S.swDone>=S.swTarget){
+      S.chats++;
+      var unlock=Math.min(S.pendingUnlock,Math.max(0,(S.hasWithdrawn?999999:17000)-S.dayEarnings[S.day-1]));
+      if(unlock>0){S.balance+=unlock;S.dayEarnings[S.day-1]+=unlock;updateUI();}
+      document.getElementById('clm-amt').textContent=fmt(S.pendingUnlock+S.swTarget*500);
+      document.getElementById('clm-chat').textContent=fmt(S.pendingUnlock);
+      document.getElementById('clm-shares').textContent=fmt(S.swTarget*500);
+      document.getElementById('clm-bal').textContent=fmt(S.balance);
+      setTimeout(function(){pg('pg-claim');},600);
+    }
+  },vDelay);
+}
+
+function showLB(){
+  var icons=['🥇','🥈','🥉'];
+  document.getElementById('lb-list').innerHTML=LBD.map(function(u,i){
+    return '<div class="lbi"><div class="lbrank '+(i<3?'gld':'')+'">'+(i<3?icons[i]:(i+1))+'</div><div class="lbav">'+u.e+'</div><div style="flex:1"><div class="lbnm">'+u.n+'</div><div class="lbst">'+u.s+'</div></div><div class="lbe">'+fmt(u.a)+'</div></div>';
+  }).join('');
+  pg('pg-lb');
+}
+
+function doWithdraw(){
+  if(!S.kycDone){toast('Complete your KYC first');openLink('kyc');return;}
+  if(S.day<3){toast('Withdrawal unlocks on Day 3');return;}
+  if(S.balance<50000){toast('You need at least ₦50,000');return;}
+  var bank=document.getElementById('wd-bank').value;
+  var acct=document.getElementById('wd-acct').value;
+  var amount=parseInt(document.getElementById('wd-amount').value);
+  if(!bank){toast('Please select your bank');return;}
+  if(!acct||acct.length<10){toast('Please enter a valid 10-digit account number');return;}
+  if(!amount||amount<50000){toast('Minimum withdrawal is ₦50,000');return;}
+  if(amount>S.balance){toast('Amount exceeds your balance');return;}
+  document.getElementById('succ-amt').textContent=fmt(amount);
+  pg('pg-proc');
+  ['ps2','ps3','ps4'].forEach(function(id,i){
+    setTimeout(function(){
+      document.getElementById(id).classList.add('done');
+      if(i===2)setTimeout(function(){S.hasWithdrawn=true;S.capWarningShown=false;pg('pg-success');},800);
+    },(i+1)*1400);
+  });
+}
+
+updateUI();
+</script>
+</body>
+</html>
